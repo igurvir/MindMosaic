@@ -10,12 +10,9 @@ import UserNotifications
 import FirebaseFirestore
 
 struct ContentView: View {
-    // States for entries and alert
-    @State private var entry1: String = ""
-    @State private var entry2: String = ""
-    @State private var entry3: String = ""
+    @Environment(\.managedObjectContext) private var viewContext
+    @StateObject private var viewModel = GratitudeEntryViewModel()
     @State private var showAlert = false
-    let db = Firestore.firestore()  // Firestore database reference
 
     var body: some View {
         NavigationView {
@@ -24,21 +21,27 @@ struct ContentView: View {
                     .font(.headline)
                     .padding(.top)
                 
-                // Entry text fields
-                TextField("First entry...", text: $entry1)
+                // Entry text fields bound to ViewModel properties
+                TextField("First entry...", text: $viewModel.entry1)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
                 
-                TextField("Second entry...", text: $entry2)
+                TextField("Second entry...", text: $viewModel.entry2)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
                 
-                TextField("Third entry...", text: $entry3)
+                TextField("Third entry...", text: $viewModel.entry3)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
                 
-                // Submit button
-                Button(action: submitEntries) {
+                // Submit button triggers ViewModel function
+                Button(action: {
+                    if !viewModel.isValid() {
+                        showAlert = true
+                    } else {
+                        viewModel.submitEntries()
+                    }
+                }) {
                     Text("Submit")
                         .font(.title2)
                         .bold()
@@ -67,8 +70,8 @@ struct ContentView: View {
                 }
                 .padding(.top)
                 
-                // Navigation link to Wellness Tips
-                NavigationLink(destination: WellnessTipsView()) {
+                // Navigation link to Wellness Tips with Core Data context
+                NavigationLink(destination: WellnessTipsView(context: viewContext)) {
                     Text("View Wellness Tips")
                         .font(.headline)
                         .padding()
@@ -84,29 +87,6 @@ struct ContentView: View {
         }
     }
     
-    // Function to handle entry submission with validation
-    func submitEntries() {
-        // Collect non-empty entries and ensure uniqueness and character limit
-        let entries = [entry1, entry2, entry3].filter { !$0.isEmpty }
-        let uniqueEntries = Set(entries)
-        
-        if entries.count != uniqueEntries.count || entries.isEmpty || entries.contains(where: { $0.count > 100 }) {
-            showAlert = true
-        } else {
-            // Save to Firestore
-            let today = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none)
-            let data = ["entries": entries, "timestamp": Timestamp(date: Date())] as [String : Any]
-            
-            db.collection("gratitude_entries").document(today).setData(data, merge: true) { error in
-                if let error = error {
-                    print("Error saving data: \(error)")
-                } else {
-                    print("Entries saved successfully!")
-                }
-            }
-        }
-    }
-    
     // Function to request notification permission
     func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
@@ -114,7 +94,7 @@ struct ContentView: View {
                 print("Notification permission error: \(error)")
             } else if granted {
                 print("Notification permission granted")
-                scheduleDailyNotification() // Schedule the notification once permission is granted
+                scheduleDailyNotification()
             } else {
                 print("Notification permission denied")
             }
@@ -130,8 +110,8 @@ struct ContentView: View {
 
         // Set the notification trigger for 8:00 AM every day
         var dateComponents = DateComponents()
-        dateComponents.hour = 8 // Adjust this for your preferred hour
-        dateComponents.minute = 0 // Adjust this for your preferred minute
+        dateComponents.hour = 8
+        dateComponents.minute = 0
         
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
         

@@ -6,10 +6,15 @@
 //
 
 import SwiftUI
+import Firebase
 
 @main
 struct MindMosaicApp: App {
     let persistenceController = PersistenceController.shared
+
+    init() {
+        FirebaseApp.configure() // Initialize Firebase
+    }
 
     var body: some Scene {
         WindowGroup {
