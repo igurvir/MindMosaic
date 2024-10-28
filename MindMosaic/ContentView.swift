@@ -7,18 +7,81 @@
 
 import SwiftUI
 import UserNotifications
+import FirebaseFirestore
 
 struct ContentView: View {
+    // States for entries and alert
+    @State private var entry1: String = ""
+    @State private var entry2: String = ""
+    @State private var entry3: String = ""
+    @State private var showAlert = false
+    let db = Firestore.firestore()  // Firestore database reference
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        VStack(spacing: 20) {
+            Text("What are you grateful for today?")
+                .font(.headline)
+                .padding(.top)
+            
+            // Entry text fields
+            TextField("First entry...", text: $entry1)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
+            
+            TextField("Second entry...", text: $entry2)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
+            
+            TextField("Third entry...", text: $entry3)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
+            
+            // Submit button
+            Button(action: submitEntries) {
+                Text("Submit")
+                    .font(.title2)
+                    .bold()
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("Validation Error"),
+                    message: Text("Please make sure each entry is unique, non-empty, and does not exceed the character limit."),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
         }
-        .padding()
         .onAppear {
             requestNotificationPermission()
+        }
+        .padding()
+    }
+    
+    // Function to handle entry submission with validation
+    func submitEntries() {
+        // Collect non-empty entries and ensure uniqueness and character limit
+        let entries = [entry1, entry2, entry3].filter { !$0.isEmpty }
+        let uniqueEntries = Set(entries)
+        
+        if entries.count != uniqueEntries.count || entries.isEmpty || entries.contains(where: { $0.count > 100 }) {
+            showAlert = true
+        } else {
+            // Save to Firestore
+            let today = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none)
+            let data = ["entries": entries, "timestamp": Timestamp(date: Date())] as [String : Any]
+            
+            db.collection("gratitude_entries").document(today).setData(data, merge: true) { error in
+                if let error = error {
+                    print("Error saving data: \(error)")
+                } else {
+                    print("Entries saved successfully!")
+                }
+            }
         }
     }
     
