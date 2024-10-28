@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Firebase
+import UserNotifications
 
 @main
 struct MindMosaicApp: App {
@@ -14,6 +15,7 @@ struct MindMosaicApp: App {
 
     init() {
         FirebaseApp.configure() // Initialize Firebase
+        UNUserNotificationCenter.current().delegate = NotificationDelegate.shared // Set the notification delegate
     }
 
     var body: some Scene {
