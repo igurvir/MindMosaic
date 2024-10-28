@@ -53,7 +53,7 @@ class GratitudeEntryViewModel: ObservableObject {
 
         // Check if today's document already exists
         documentRef.getDocument { (document, error) in
-            if let document = document, document.exists, var existingData = document.data() {
+            if let document = document, document.exists, let existingData = document.data() {
                 // Retrieve existing entries and append new ones
                 var allEntries = existingData["entries"] as? [String] ?? []
                 allEntries.append(contentsOf: entries) // Append new entries to existing ones

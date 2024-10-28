@@ -15,75 +15,31 @@ struct ContentView: View {
     @State private var showAlert = false
 
     var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                Text("What are you grateful for today?")
-                    .font(.headline)
-                    .padding(.top)
-                
-                // Entry text fields bound to ViewModel properties
-                TextField("First entry...", text: $viewModel.entry1)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.horizontal)
-                
-                TextField("Second entry...", text: $viewModel.entry2)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.horizontal)
-                
-                TextField("Third entry...", text: $viewModel.entry3)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.horizontal)
-                
-                // Submit button triggers ViewModel function
-                Button(action: {
-                    if !viewModel.isValid() {
-                        showAlert = true
-                    } else {
-                        viewModel.submitEntries()
-                    }
-                }) {
-                    Text("Submit")
-                        .font(.title2)
-                        .bold()
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                        .padding(.horizontal)
+        TabView {
+            // Main Gratitude Entry Tab
+            GratitudeEntryView(viewModel: viewModel, showAlert: $showAlert)
+                .tabItem {
+                    Label("Gratitude", systemImage: "square.and.pencil")
                 }
-                .alert(isPresented: $showAlert) {
-                    Alert(
-                        title: Text("Validation Error"),
-                        message: Text("Please make sure each entry is unique, non-empty, and does not exceed the character limit."),
-                        dismissButton: .default(Text("OK"))
-                    )
+
+            // Journal Log Tab
+            JournalLogView()
+                .tabItem {
+                    Label("Journal Log", systemImage: "book.fill")
                 }
-                
-                // Navigation link to Journal Log
-                NavigationLink(destination: JournalLogView()) {
-                    Text("View Journal Log")
-                        .font(.headline)
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(8)
+
+            // Wellness Tips Tab
+            WellnessTipsView(context: viewContext)
+                .tabItem {
+                    Label("Wellness Tips", systemImage: "leaf.fill")
                 }
-                .padding(.top)
-                
-                // Navigation link to Wellness Tips with Core Data context
-                NavigationLink(destination: WellnessTipsView(context: viewContext)) {
-                    Text("View Wellness Tips")
-                        .font(.headline)
-                        .padding()
-                        .background(Color.green.opacity(0.2))
-                        .cornerRadius(8)
-                }
-                .padding(.top)
-            }
-            .onAppear {
-                requestNotificationPermission()
-            }
-            .padding()
+            SettingsView()
+                            .tabItem {
+                                Label("Settings", systemImage: "gearshape.fill")
+                            }
+        }
+        .onAppear {
+            requestNotificationPermission()
         }
     }
     
@@ -126,6 +82,56 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView()
+// Separate Gratitude Entry View
+struct GratitudeEntryView: View {
+    @ObservedObject var viewModel: GratitudeEntryViewModel
+    @Binding var showAlert: Bool
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("What are you grateful for today?")
+                .font(.headline)
+                .padding(.top)
+            
+            // Entry text fields bound to ViewModel properties
+            TextField("First entry...", text: $viewModel.entry1)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
+            
+            TextField("Second entry...", text: $viewModel.entry2)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
+            
+            TextField("Third entry...", text: $viewModel.entry3)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
+            
+            // Submit button triggers ViewModel function
+            Button(action: {
+                if !viewModel.isValid() {
+                    showAlert = true
+                } else {
+                    viewModel.submitEntries()
+                }
+            }) {
+                Text("Submit")
+                    .font(.title2)
+                    .bold()
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("Validation Error"),
+                    message: Text("Please make sure each entry is unique, non-empty, and does not exceed the character limit."),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
+        }
+        .padding()
+    }
 }
