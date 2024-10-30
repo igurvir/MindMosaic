@@ -4,7 +4,7 @@ import CoreData
 struct WellnessTipsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var viewModel: WellnessTipsViewModel
-    @State private var showSavedTipsOverlay = false // State to show saved tips overlay
+    @State private var showSavedTipsOverlay = false
 
     init(context: NSManagedObjectContext) {
         _viewModel = StateObject(wrappedValue: WellnessTipsViewModel(context: context))
@@ -16,7 +16,6 @@ struct WellnessTipsView: View {
                 .font(.largeTitle)
                 .padding(.top)
             
-            // List of wellness tips with save functionality
             List(viewModel.tips.prefix(10), id: \.self) { tip in
                 HStack {
                     Text(tip.name ?? "Unknown Tip")
@@ -28,7 +27,6 @@ struct WellnessTipsView: View {
                 }
             }
             
-            // Button to view saved tips
             Button(action: {
                 showSavedTipsOverlay = true
             }) {
@@ -44,7 +42,6 @@ struct WellnessTipsView: View {
                 SavedTipsOverlay(savedTips: viewModel.savedTips)
             }
             
-            // Button to refresh tips
             Button(action: viewModel.refreshTips) {
                 Text("Refresh Tips")
                     .font(.headline)
@@ -57,11 +54,11 @@ struct WellnessTipsView: View {
         }
         .onAppear {
             viewModel.fetchTips()
+            viewModel.fetchSavedTips()
         }
     }
 }
 
-// Saved Tips Overlay View
 // Saved Tips Overlay View
 struct SavedTipsOverlay: View {
     var savedTips: [WellnessTip]
@@ -79,7 +76,6 @@ struct SavedTipsOverlay: View {
         }
     }
 }
-
 
 #Preview {
     WellnessTipsView(context: PersistenceController.preview.container.viewContext)

@@ -3,30 +3,30 @@ import CoreData
 import SwiftUI
 
 class WellnessTipsViewModel: ObservableObject {
-    @Published var tips: [WellnessTip] = []         // All wellness tips
+    @Published var tips: [WellnessTip] = []         // All unsaved wellness tips
     @Published var savedTips: [WellnessTip] = []     // Only saved tips
     private var viewContext: NSManagedObjectContext
 
     init(context: NSManagedObjectContext) {
         self.viewContext = context
-        fetchTips()
+        fetchTips()        // Fetch unsaved tips
+        fetchSavedTips()   // Fetch saved tips
     }
     
-    // Fetch all wellness tips from Core Data
+    // Fetch all unsaved wellness tips from Core Data
     func fetchTips() {
         let request: NSFetchRequest<WellnessTip> = WellnessTip.fetchRequest()
         request.predicate = NSPredicate(format: "saved == NO") // Fetch only unsaved tips
 
         do {
             tips = try viewContext.fetch(request)
-            if tips.isEmpty { addInitialTips() } // If no tips, populate initial ones
+            if tips.isEmpty { addInitialTips() } // If no unsaved tips, populate initial ones
         } catch {
             print("Error fetching wellness tips: \(error)")
         }
     }
 
-    
-    // Fetch only saved tips
+    // Fetch only saved tips from Core Data
     func fetchSavedTips() {
         let request: NSFetchRequest<WellnessTip> = WellnessTip.fetchRequest()
         request.predicate = NSPredicate(format: "saved == YES") // Only saved tips
@@ -42,6 +42,7 @@ class WellnessTipsViewModel: ObservableObject {
         tip.saved.toggle() // Toggle saved status
         saveContext()
         fetchSavedTips() // Refresh saved tips list
+        fetchTips()      // Refresh unsaved tips list
     }
 
     // Populate Core Data with initial wellness tips
@@ -70,16 +71,14 @@ class WellnessTipsViewModel: ObservableObject {
         fetchTips() // Refresh after saving
     }
     
-    // Delete and refresh with initial wellness tips
+    // Refresh only unsaved tips and preserve saved tips
     func refreshTips() {
-       
-        tips.forEach { viewContext.delete($0) }
-        addInitialTips()
-        fetchTips() 
+        let unsavedTips = tips.filter { !$0.saved }
+        unsavedTips.forEach { viewContext.delete($0) } // Delete only unsaved tips
+        addInitialTips()   // Re-add initial unsaved tips
+        fetchTips()        // Refresh unsaved tips list
     }
 
-
-    
     // Save changes to Core Data
     private func saveContext() {
         do {
