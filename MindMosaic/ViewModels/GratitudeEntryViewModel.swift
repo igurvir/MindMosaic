@@ -4,17 +4,23 @@ import Combine
 import UserNotifications
 
 class GratitudeEntryViewModel: ObservableObject {
-    @Published var entriesByDate: [String: [String]] = [:] // Data for Journal Log
+    @Published var entriesByDate: [String: [String]] = [:]
     @Published var entry1: String = ""
     @Published var entry2: String = ""
     @Published var entry3: String = ""
+    @Published var quoteText: String = ""   // Stores the fetched quote text
+    @Published var quoteAuthor: String = "" // Stores the fetched quote author
+
     private let db = Firestore.firestore()
+    private let appSettingsViewModel = AppSettingsViewModel()
+    private let quoteService = QuoteService() // Instance of QuoteService
 
     init() {
-        requestNotificationPermission() // Request permission when initializing the ViewModel
+        requestNotificationPermission()
+        fetchQuote() // Fetch a quote upon initialization
     }
 
-    // Fetch entries from Firestore and organize them by date
+    // Fetch entries from Firestore
     func fetchEntries() {
         db.collection("gratitude_entries").getDocuments { snapshot, error in
             guard let documents = snapshot?.documents, error == nil else {
@@ -33,14 +39,14 @@ class GratitudeEntryViewModel: ObservableObject {
         }
     }
 
-    // Validate entries to ensure they're unique, non-empty, and within character limit
+    // Validate entries
     func isValid() -> Bool {
         let entries = [entry1, entry2, entry3].filter { !$0.isEmpty }
         let uniqueEntries = Set(entries)
         return entries.count == uniqueEntries.count && !entries.isEmpty && !entries.contains(where: { $0.count > 100 })
     }
 
-    // Submit entries to Firestore and append if they exist on the same day
+    // Submit entries to Firestore
     func submitEntries() {
         if !isValid() {
             print("Validation error.")
@@ -51,34 +57,45 @@ class GratitudeEntryViewModel: ObservableObject {
         let today = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none)
         let documentRef = db.collection("gratitude_entries").document(today)
 
-        // Check if today's document already exists
         documentRef.getDocument { (document, error) in
             if let document = document, document.exists, let existingData = document.data() {
-                // Retrieve existing entries and append new ones
                 var allEntries = existingData["entries"] as? [String] ?? []
-                allEntries.append(contentsOf: entries) // Append new entries to existing ones
+                allEntries.append(contentsOf: entries)
 
-                // Update Firestore with the combined entries
                 documentRef.setData(["entries": allEntries, "timestamp": Timestamp(date: Date())], merge: true) { error in
-                    if let error = error {
-                        print("Error saving data: \(error)")
-                    } else {
-                        print("Entries saved successfully!")
+                    if error == nil {
                         self.clearEntries()
                         self.scheduleSaveNotification()
+                        print("Calling updateStreak")
+                        self.appSettingsViewModel.updateStreak()
                     }
                 }
             } else {
-                // If no existing document, create a new one
                 let newEntryData: [String: Any] = ["entries": entries, "timestamp": Timestamp(date: Date())]
                 documentRef.setData(newEntryData) { error in
-                    if let error = error {
-                        print("Error saving data: \(error)")
-                    } else {
-                        print("Entries saved successfully!")
+                    if error == nil {
                         self.clearEntries()
                         self.scheduleSaveNotification()
+                        print("Calling updateStreak")
+                        self.appSettingsViewModel.updateStreak()
                     }
+                }
+            }
+        }
+    }
+
+    // Fetch a random quote from ZenQuotes API
+    func fetchQuote() {
+        quoteService.fetchRandomQuote { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let quote):
+                    self.quoteText = quote.q
+                    self.quoteAuthor = quote.a
+                case .failure(let error):
+                    print("Error fetching quote: \(error)")
+                    self.quoteText = "Stay positive and keep moving forward!"
+                    self.quoteAuthor = "Unknown"
                 }
             }
         }
@@ -94,33 +111,21 @@ class GratitudeEntryViewModel: ObservableObject {
     // Request notification permission
     private func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
-            if let error = error {
-                print("Notification permission error: \(error)")
-            } else if granted {
+            if granted {
                 print("Notification permission granted")
-            } else {
-                print("Notification permission denied")
             }
         }
     }
 
-    // Schedule a notification to notify user of successful save
+    // Schedule a notification after successful save
     private func scheduleSaveNotification() {
         let content = UNMutableNotificationContent()
         content.title = "MindMosaic"
-        content.body = "Yay! Your gratitude entry has been saved successfully! 🤩"
+        content.body = "Your gratitude entry has been saved successfully!"
         content.sound = .default
 
-        // Trigger notification immediately
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Error scheduling notification: \(error.localizedDescription)")
-            } else {
-                print("Save notification scheduled successfully.")
-            }
-        }
+        UNUserNotificationCenter.current().add(request)
     }
 }

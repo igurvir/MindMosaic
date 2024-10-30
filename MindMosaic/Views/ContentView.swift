@@ -33,13 +33,16 @@ struct ContentView: View {
                 .tabItem {
                     Label("Wellness Tips", systemImage: "leaf.fill")
                 }
+
+            // Settings Tab
             SettingsView()
-                            .tabItem {
-                                Label("Settings", systemImage: "gearshape.fill")
-                            }
+                .tabItem {
+                    Label("Settings", systemImage: "gearshape.fill")
+                }
         }
         .onAppear {
             requestNotificationPermission()
+            viewModel.fetchQuote() // Fetch the quote only once when the app starts
         }
     }
     
@@ -89,6 +92,19 @@ struct GratitudeEntryView: View {
 
     var body: some View {
         VStack(spacing: 20) {
+            // Display the quote fetched from ZenQuotes API
+            Text(viewModel.quoteText)
+                .font(.subheadline)
+                .italic()
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+            
+            if !viewModel.quoteAuthor.isEmpty {
+                Text("- \(viewModel.quoteAuthor)")
+                    .font(.footnote)
+                    .foregroundColor(.gray)
+            }
+            
             Text("What are you grateful for today?")
                 .font(.headline)
                 .padding(.top)
