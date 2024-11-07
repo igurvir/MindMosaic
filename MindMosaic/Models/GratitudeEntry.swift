@@ -2,7 +2,7 @@ import Foundation
 import FirebaseFirestore
 
 struct GratitudeEntry: Identifiable {
-    var id: String // This will be the date (document ID) from Firestore
+    var id: String 
     var entries: [String]
     var timestamp: Date
     

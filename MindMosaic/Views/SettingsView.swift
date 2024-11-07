@@ -1,7 +1,5 @@
-//
-//  SettingsView.swift
-//  MindMosaic
-//
+// SettingsView.swift
+// MindMosaic
 
 import SwiftUI
 
@@ -10,49 +8,52 @@ struct SettingsView: View {
     @AppStorage("isDarkMode") private var isDarkMode = false // Dark mode setting
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Settings")
-                .font(.largeTitle)
-                .padding(.top)
-
-            // Total entries counter
-            HStack {
-                Text("Total Entries:")
+        NavigationView {
+            Form {
+                Section(header: Text("Account Info")
                     .font(.headline)
-                Spacer()
-                Text("\(viewModel.totalEntries)")
-                    .font(.body)
-            }
-            .padding()
-
-            // Streak counter
-            HStack {
-                Text("Current Streak:")
+                    .foregroundColor(.primary)) {
+                    // Total entries counter
+                    HStack {
+                        Text("Total Entries")
+                        Spacer()
+                        Text("\(viewModel.totalEntries)")
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.vertical, 8)
+                    
+                    // Streak counter
+                    HStack {
+                        Text("Current Streak")
+                        Spacer()
+                        Text("\(viewModel.currentStreak) 🔥")
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.vertical, 8)
+                }
+                
+                Section(header: Text("Preferences")
                     .font(.headline)
-                Spacer()
-                Text("\(viewModel.currentStreak) 🔥")
-                    .font(.body)
+                    .foregroundColor(.primary)) {
+                    // Dark Mode Toggle
+                    Toggle(isOn: $isDarkMode) {
+                        Label("Dark Mode", systemImage: isDarkMode ? "moon.fill" : "sun.max.fill")
+                            .foregroundColor(isDarkMode ? .yellow : .blue)
+                    }
+                    .onChange(of: isDarkMode) { newValue in
+                        viewModel.toggleDarkMode(isEnabled: newValue)
+                    }
+                    .padding(.vertical, 8)
+                }
             }
-            .padding()
-
-            // Dark Mode Toggle
-            Toggle(isOn: $isDarkMode) {
-                Text("Dark Mode")
-                    .font(.headline)
+            .navigationTitle("Settings")
+            .onAppear {
+                viewModel.updateTotalEntries()
+                viewModel.fetchStreak()
             }
-            .onChange(of: isDarkMode) { newValue in
-                viewModel.toggleDarkMode(isEnabled: newValue)
-            }
-            .padding()
-
-            Spacer()
+            .preferredColorScheme(isDarkMode ? .dark : .light) // Dynamically adjust color scheme
+            .background(Color(UIColor.systemGroupedBackground).ignoresSafeArea())
         }
-        .padding()
-        .onAppear {
-            viewModel.updateTotalEntries()
-            viewModel.fetchStreak()
-        }
-        .preferredColorScheme(isDarkMode ? .dark : .light) // Dynamically adjust color scheme
     }
 }
 
