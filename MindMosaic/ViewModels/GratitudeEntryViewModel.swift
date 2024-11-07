@@ -43,7 +43,7 @@ class GratitudeEntryViewModel: ObservableObject {
     func isValid() -> Bool {
         let entries = [entry1, entry2, entry3].filter { !$0.isEmpty }
         let uniqueEntries = Set(entries)
-        return entries.count == uniqueEntries.count && !entries.isEmpty && !entries.contains(where: { $0.count > 100 })
+        return entries.count == uniqueEntries.count && !entries.isEmpty && !entries.contains(where: { $0.count > 200 })
     }
 
     // Submit entries to Firestore

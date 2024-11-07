@@ -1,7 +1,7 @@
-//  JournalLogView.swift
-//  MindMosaic
-//  Created by Gurvir Singh on 2024-10-28.
-//  Student Id-991675538
+// JournalLogView.swift
+// MindMosaic
+// Created by Gurvir Singh on 2024-10-28.
+// Student Id-991675538
 
 import SwiftUI
 
@@ -10,29 +10,36 @@ struct JournalLogView: View {
 
     var body: some View {
         NavigationView {
-            List {
-                ForEach(viewModel.entriesByDate.keys.sorted(), id: \.self) { date in
-                    NavigationLink(destination: EntriesView(date: date, entries: viewModel.entriesByDate[date] ?? [])) {
-                        HStack {
-                            Image(systemName: "calendar")
-                                .foregroundColor(.blue)
-                            Text(date)
-                                .font(.headline)
-                                .foregroundColor(.primary)
+            ScrollView {
+                VStack(spacing: 12) {
+                    ForEach(viewModel.entriesByDate.keys.sorted(), id: \.self) { date in
+                        NavigationLink(destination: EntriesView(date: date, entries: viewModel.entriesByDate[date] ?? [])) {
+                            HStack {
+                                Image(systemName: "calendar")
+                                    .foregroundColor(.blue)
+                                Text(date)
+                                    .font(.headline)
+                                    .foregroundColor(.primary)
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(RoundedRectangle(cornerRadius: 10).fill(Color(UIColor.secondarySystemBackground)))
+                            .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color(UIColor.separator), lineWidth: 1)
+                            )
                         }
-                        .padding(.vertical, 8)
+                        .padding(.horizontal)
                     }
-                    .listRowBackground(Color(UIColor.secondarySystemBackground))
-                    .cornerRadius(10)
-                    .shadow(radius: 3)
                 }
+                .padding(.vertical)
             }
+            .background(Color(UIColor.systemGroupedBackground).ignoresSafeArea())
             .navigationTitle("Journal Log")
-            .listStyle(InsetGroupedListStyle())
             .onAppear {
                 viewModel.fetchEntries()
             }
-            .background(Color(UIColor.systemGroupedBackground).ignoresSafeArea())
         }
     }
 }
@@ -42,23 +49,27 @@ struct EntriesView: View {
     var entries: [String]
 
     var body: some View {
-        List(entries, id: \.self) { entry in
-            VStack(alignment: .leading, spacing: 8) {
-                Text(entry)
-                    .font(.body)
-                    .foregroundColor(.primary)
-                    .padding(.vertical, 6)
-                    .padding(.horizontal)
-                    .background(Color(UIColor.systemBackground))
-                    .cornerRadius(10)
-                    .shadow(radius: 2)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                ForEach(entries, id: \.self) { entry in
+                    Text(entry)
+                        .font(.body)
+                        .foregroundColor(.primary)
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(RoundedRectangle(cornerRadius: 10).fill(Color(UIColor.systemBackground)))
+                        .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color(UIColor.separator), lineWidth: 1)
+                        )
+                        .padding(.horizontal)
+                }
             }
-            .listRowSeparator(.hidden)
-            .listRowBackground(Color.clear)
+            .padding(.vertical)
         }
-        .navigationTitle(date)
-        .listStyle(PlainListStyle()) // Minimalist look for the list
         .background(Color(UIColor.systemGroupedBackground).ignoresSafeArea())
+        .navigationTitle(date)
     }
 }
 

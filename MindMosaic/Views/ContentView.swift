@@ -63,7 +63,8 @@ struct ContentView: View {
             }
         }
     }
-    //notification scheduler
+    
+    // Notification scheduler
     func scheduleDailyNotification() {
         let content = UNMutableNotificationContent()
         content.title = "MindMosaic Reminder"
@@ -87,7 +88,7 @@ struct ContentView: View {
     }
 }
 
-//gratitude entry
+// Gratitude Entry View
 struct GratitudeEntryView: View {
     @ObservedObject var viewModel: GratitudeEntryViewModel
     @Binding var showAlert: Bool
@@ -95,7 +96,7 @@ struct GratitudeEntryView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                //display
+                // Display the quote
                 Text(viewModel.quoteText)
                     .font(.title3)
                     .italic()
@@ -116,23 +117,17 @@ struct GratitudeEntryView: View {
                     .padding(.top)
 
                 // Entry fields
-                TextField("First entry...", text: $viewModel.entry1)
-                    .padding()
-                    .background(RoundedRectangle(cornerRadius: 10).fill(Color(UIColor.systemBackground)))
-                    .shadow(radius: 3)
-                    .padding(.horizontal)
-                
-                TextField("Second entry...", text: $viewModel.entry2)
-                    .padding()
-                    .background(RoundedRectangle(cornerRadius: 10).fill(Color(UIColor.systemBackground)))
-                    .shadow(radius: 3)
-                    .padding(.horizontal)
-                
-                TextField("Third entry...", text: $viewModel.entry3)
-                    .padding()
-                    .background(RoundedRectangle(cornerRadius: 10).fill(Color(UIColor.systemBackground)))
-                    .shadow(radius: 3)
-                    .padding(.horizontal)
+                ForEach(["First entry...", "Second entry...", "Third entry..."], id: \.self) { placeholder in
+                    TextField(placeholder, text: binding(for: placeholder))
+                        .padding()
+                        .background(RoundedRectangle(cornerRadius: 10).fill(Color(UIColor.systemBackground)))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color(UIColor.separator), lineWidth: 1) // Separator line for visibility
+                        )
+                        .shadow(radius: 3)
+                        .padding(.horizontal)
+                }
                 
                 // Submit button
                 Button(action: {
@@ -165,6 +160,20 @@ struct GratitudeEntryView: View {
                 }
             }
             .padding()
+        }
+    }
+    
+    // Helper function to get binding for entry fields
+    private func binding(for placeholder: String) -> Binding<String> {
+        switch placeholder {
+        case "First entry...":
+            return $viewModel.entry1
+        case "Second entry...":
+            return $viewModel.entry2
+        case "Third entry...":
+            return $viewModel.entry3
+        default:
+            return .constant("")
         }
     }
 }

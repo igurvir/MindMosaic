@@ -16,6 +16,15 @@ struct MindMosaicApp: App {
     init() {
         FirebaseApp.configure() // Initialize Firebase
         UNUserNotificationCenter.current().delegate = NotificationDelegate.shared // Set the notification delegate
+
+        // for dark and light mode
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithOpaqueBackground()
+        tabBarAppearance.backgroundColor = UIColor.systemBackground
+        
+        UITabBar.appearance().standardAppearance = tabBarAppearance
+        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+        UITabBar.appearance().unselectedItemTintColor = UIColor.systemGray
     }
 
     var body: some Scene {
