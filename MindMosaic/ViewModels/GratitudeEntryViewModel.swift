@@ -2,6 +2,7 @@ import Foundation
 import FirebaseFirestore
 import Combine
 import UserNotifications
+import WidgetKit
 
 class GratitudeEntryViewModel: ObservableObject {
     @Published var entriesByDate: [String: [String]] = [:]
@@ -46,7 +47,7 @@ class GratitudeEntryViewModel: ObservableObject {
         return entries.count == uniqueEntries.count && !entries.isEmpty && !entries.contains(where: { $0.count > 200 })
     }
 
-    // Submit entries to Firestore
+    // Submit entries to Firestore and save the latest entry to UserDefaults
     func submitEntries() {
         if !isValid() {
             print("Validation error.")
@@ -68,6 +69,7 @@ class GratitudeEntryViewModel: ObservableObject {
                         self.scheduleSaveNotification()
                         print("Calling updateStreak")
                         self.appSettingsViewModel.updateStreak()
+                        self.saveLatestEntry(entries.last ?? "")
                     }
                 }
             } else {
@@ -78,10 +80,19 @@ class GratitudeEntryViewModel: ObservableObject {
                         self.scheduleSaveNotification()
                         print("Calling updateStreak")
                         self.appSettingsViewModel.updateStreak()
+                        self.saveLatestEntry(entries.last ?? "")
                     }
                 }
             }
         }
+    }
+
+    // Save the latest entry to UserDefaults for widget access
+    private func saveLatestEntry(_ entry: String) {
+        let sharedDefaults = UserDefaults(suiteName: "group.com.MindMosaic")
+        sharedDefaults?.set(entry, forKey: "latestGratitudeEntry")
+        WidgetCenter.shared.reloadAllTimelines()
+        
     }
 
     // Fetch a random quote from ZenQuotes API
