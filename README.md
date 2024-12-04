@@ -109,7 +109,7 @@ To enable the widget:
 
 ## Connect with Me  
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)](www.linkedin.com/in/gurvir-singh5)  
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)](www.linkedin.com/in/gurvir-singh5)
 
 ---
 
