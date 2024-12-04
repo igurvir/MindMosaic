@@ -1,140 +1,119 @@
-Project Overview
+![Swift](https://img.shields.io/badge/Swift-5.0-orange.svg)
+![iOS](https://img.shields.io/badge/iOS-16.0%2B-blue.svg)
+![Firebase](https://img.shields.io/badge/Firebase-Firestore-yellow.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-Introduction
-MindMosaic is a mobile application designed to promote mental well-being through the practice of daily gratitude journaling. The purpose of this app is to help users build a habit of mindfulness by encouraging them to reflect on positive aspects of their life and express gratitude regularly. By doing so, users can cultivate a sense of mindfulness leading to improved mental clarity and emotional well-being over time.
+# MindMosaic  
+MindMosaic is a Swift-based iOS application designed to help users cultivate mindfulness, gratitude, and personal growth. Through a sleek, Apple-like UI, the app encourages daily reflection, tracks progress, and motivates users with inspirational quotes and wellness tips.
 
-Target Audience
-The app is aimed at individuals seeking to improve their mental health and well-being through daily mindfulness practices. People who are interested in self-reflection, personal growth and developing a consistent gratitude practice. Whether used by busy professionals, students, or anyone looking to foster a more positive outlook on life, MindMosaic is designed to be simple, intuitive and flexible to fit into a variety of lifestyles.
+---
 
-Important Features
-MindMosaic offers several key features aimed at promoting gratitude and well-being:
-•	Daily Gratitude Logging: Users can enter three things they are grateful for each day, with validation to ensure meaningful input. Multiple submissions a day is also allowed.
-•	Push Notifications: Daily reminders to prompt users to log their gratitude entries, reinforcing positive habit formation.
-•	Motivational Quotes: Integrated with the ZenQuotes API, the app displays a daily motivational quote related to mindfulness and well-being.
-•	Wellness Tips: A collection of wellness tips is provided, randomly refreshed each time the user opens the tips page/ app. Refresh button can be used to refresh the tips if user wants and a star button to save any tip they like.
-•	Streak and Entry Tracking: The app tracks how many consecutive days the user has logged entries.
-•	Dark Mode: Users can toggle between light and dark themes, providing personalized and visually appealing interface.
+## Table of Contents  
+1. [Features](#features)  
+2. [Tech Stack](#tech-stack)  
+3. [Firebase Setup](#firebase-setup)  
+4. [ZenQuotes API](#zenquotes-api)  
+5. [Widget Integration](#widget-integration)  
+6. [How to Run](#how-to-run)  
+7. [Connect with Me](#connect-with-me)  
+8. [License](#license)
 
-Services and Functionalities Provided
-MindMosaic provides several valuable services to users:
-•	Real-time Data Storage: Gratitude entries are stored in Cloud Firestore.
-•	Daily Motivational Support: The app provides inspiration through quotes fetched from the ZenQuotes API, helping users stay motivated in their mindfulness journey.
-•	Wellness Enhancement: The app’s wellness tips serve as helpful suggestions for users looking to improve through mental and emotional health.
-•	Tracking Progress: The app allows users to monitor their streak of daily gratitude entries, encouraging consistency and helping users build long-term positive habits.
+---
 
+## Features  
 
+### Gratitude Journal  
+- Submit up to three gratitude entries daily.
+- Entries are validated for uniqueness, length, and non-emptiness.
+- View past entries organized by date, synced in real-time with Firestore.
 
-Development Environment
-MindMosaic is being developed using Swift and SwiftUI for iOS, ensuring modern and responsive UI components. The app utilizes Firebase as the backend to store user entries.
-Push notifications are implemented using UserNotifcations framework to remind users to log their entries daily. For third-party API integration, the app uses ZenQuotes API to dynamically fetch and display motivational quotes. 
-The app is designed following the MVC model (Model-View-Controller) architecture, ensuring clean and separation of concerns, maintainability, and scalability. The development environment includes the following-
-•	Xcode IDE: for writing, testing, debugging
-•	Firebase Console: for managing Firestore database and push notification services.
-•	ZenQuotes API: for fetching motivational quotes in real time
-•	Core Data: for managing tips stored locally within the application
+### Inspirational Quotes  
+- Displays random motivational quotes fetched from the ZenQuotes API.
+- Refreshes dynamically on each app launch.
 
-With these technologies, MindMosaic offers a feature-rich experience that promotes positive mindset and mental well-being.
+### Streak Tracking  
+- Tracks consecutive days of gratitude entries.
+- Displays current streak and total entries in the settings page.
 
+### Wellness Tips  
+- Offers a curated list of 100 wellness tips.
+- Save favorite tips for future reference.  
+- Tips are stored locally for offline access.
 
+### Notifications  
+- Sends daily reminders to encourage journaling.
+- Provides a success notification after an entry is saved.
 
+### Widget Integration  
+- A home screen widget displays the latest gratitude entry.  
+- Prompts users to open the app for adding new entries.  
+- Dynamically syncs data via App Groups.
 
+### Real-Time Syncing  
+- Entries are stored in Firestore for real-time updates across sessions.
 
+### Adaptive Design  
+- Fully supports light and dark modes.
+- Clean, Apple-like aesthetic with intuitive navigation.
 
+---
 
-User Interface Wireframes
+## Tech Stack  
 
-Main View 
+- **Swift (SwiftUI)**: Leveraging SwiftUI for the app’s modern and elegant UI.  
+- **Firebase Firestore**: Stores gratitude entries in the cloud.  
+- **ZenQuotes API**: Fetches motivational quotes.  
+- **UserNotifications**: Handles daily reminders and success notifications.  
+- **WidgetKit**: Enables home screen widget functionality.  
+- **App Groups**: Syncs data between the app and the widget.
 
+---
 
-This is the primary interface where users can log their daily entries. The screen prompts the user and offers three input fields for different entries. Multiple submissions per day is allowed.
-After filling, the user submits which stores their entries in Firestore and triggers a submission notification. Additionally, the bottom part of the screen displays a randomly fetched motivational/inspirational quote from ZenQuotes API.
+## Firebase Setup  
 
-![image](https://github.com/user-attachments/assets/c1a6e746-a6b9-4133-b709-55e905aacb15)
+1. Set up Firebase for iOS and download the `GoogleService-Info.plist` file.  
+2. Add the plist to your Xcode project.  
+3. Enable Firestore in Firebase Console for real-time syncing.
 
+---
 
+## ZenQuotes API  
 
+- Sign up at [ZenQuotes API](https://zenquotes.io/) to fetch random motivational quotes.  
+- Replace API credentials in the code if needed.
 
- 
+---
 
+## Widget Integration  
 
+### Features:
+- Displays the most recent gratitude entry with a prompt to add more.
+- Dynamically syncs data from the app using App Groups.  
 
+To enable the widget:
+1. Add the App Group **`group.com.MindMosaic`** in your project settings for both the app and widget targets.  
+2. The widget updates hourly or upon user interaction.
 
+---
 
+## How to Run  
 
+1. Clone the repository:  
+   ```bash  
+   git clone https://github.com/igurvir/MindMosaic.git
+2. Open the project in Xcode.
+   
+3. Ensure your system is running iOS 16.0+ with Swift 5.0 support.
 
+4. Run the app on a simulator or a physical device.
 
+## Connect with Me  
 
-Journal Log View
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)](www.linkedin.com/in/gurvir-singh5)  
 
+---
 
-The Log allows users to revisit their past gratitude entries, which are grouped by the date of submissions. Dates with logged entries are fetched from Firestore and presented as a list. When a user selects a date, the entries for that specific day are displayed in an overlay or expanded view. This page is for viewing purposes, with no editing or deletion functionality, to support the app’s focus on reflection!
+## License  
 
-
-
- 
-![image](https://github.com/user-attachments/assets/8f99e4a1-4b8c-4871-beea-41b66875006e)
-
-
-
-
-
-
-
-
-
-
-
-
-Wellness Tips View
-
-In the Wellness Tips section, users can access a list of randomly generated wellness tips from a JSON file stored in Core Data. This is designed to promote mindfulness and personal well-being. The content refreshes every time the user accesses this page. This view is simple and provides value through actionable suggestions, with no user input required.
-
-
- 
-
-
-![image](https://github.com/user-attachments/assets/28fc703e-bbcf-42e1-ab2c-dd448ddc7dff)
-
-
-
-
-
-
-
-
-
-
-
-
-Settings View
-
-
-The Settings page allows user to manage app preferences and view their journaling statistics. Users can toggle dark mode for a personalized theme, view their total gratitude entries, and check their current streak of consecutive journaling days. Links to important app information like Terms and Conditions, Privacy Policy and Contact Us are provided. All data is fetched in real time from Firestore for this page!
-
-
-
- 
-
-
-![image](https://github.com/user-attachments/assets/88376cef-5915-4498-93d2-0e04cf5e07e8)
-
-
-
-
-
-
-
-
-
-
-Work Assignments
-
-Development responsibilities for this application are UI design, business logic and data management.
-Developer for this application- Gurvir Singh (991675538)
-
-•	Presentation (UI)- Implementation of views such as Main View, Journal Log View, Wellness Tips View and Settings View. These will be designed with SwiftUI.
-
-•	Business Logic- Developing the core logic that handles user interactions and data processing. This also includes validation checks for entries, trigger push notifications upon submissions, calculating statistics. Managing flow of data between UI and Firestore (backend database) and fetching and displaying quotes from ZenQuotes API.
-
-•	Data- Managing and storing, retrieving user data including gratitude entries, streak tracking, and wellness tips. Firestore will be used to fetch and display entries while Core Data will be used to display Tips.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
