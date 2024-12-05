@@ -47,7 +47,9 @@ MindMosaic is a Swift-based iOS application designed to help users cultivate min
 
 ### Streak Tracking  
 <img src="https://github.com/igurvir/MindMosaic/blob/main/screenshots/settings.jpeg" alt="Home Screen" width="300">
+
 - Tracks consecutive days of gratitude entries.
+
 - Displays current streak and total entries in the settings page.
 
 
@@ -60,8 +62,11 @@ MindMosaic is a Swift-based iOS application designed to help users cultivate min
 
 ### Widget Integration 
 <img src="https://github.com/igurvir/MindMosaic/blob/main/screenshots/widget.jpeg" alt="Home Screen" width="300">
-- A home screen widget displays the latest gratitude entry.  
-- Prompts users to open the app for adding new entries.  
+
+- A home screen widget displays the latest gratitude entry.
+  
+- Prompts users to open the app for adding new entries.
+  
 - Dynamically syncs data via App Groups.
 
 ### Real-Time Syncing  
