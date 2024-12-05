@@ -79,6 +79,11 @@
 			path = MindMosaicWidget;
 			sourceTree = "<group>";
 		};
+		E8D1B6FF2D01254000905BD5 /* screenshots */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = screenshots;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +110,7 @@
 		E80E4D562CCF594D0092DC65 = {
 			isa = PBXGroup;
 			children = (
+				E8D1B6FF2D01254000905BD5 /* screenshots */,
 				E87A0C9D2CDDA3FD00A8892B /* MindMosaicWidgetExtension.entitlements */,
 				E80E4D612CCF594D0092DC65 /* MindMosaic */,
 				E87A0C842CDD8CCF00A8892B /* MindMosaicWidget */,
@@ -150,6 +156,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				E80E4D612CCF594D0092DC65 /* MindMosaic */,
+				E8D1B6FF2D01254000905BD5 /* screenshots */,
 			);
 			name = MindMosaic;
 			packageProductDependencies = (

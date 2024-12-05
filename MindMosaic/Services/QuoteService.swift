@@ -9,7 +9,7 @@ import Combine
 
 // Quote model for handling JSON response
 struct Quote: Decodable {
-    let q: String  // Quote text
+    let q: String  // Quote 
     let a: String  // Author
 }
 
