@@ -22,31 +22,57 @@ MindMosaic is a Swift-based iOS application designed to help users cultivate min
 
 ## Features  
 
-### Gratitude Journal  
-- Submit up to three gratitude entries daily.
-- Entries are validated for uniqueness, length, and non-emptiness.
-- View past entries organized by date, synced in real-time with Firestore.
+### Journal Entry  
+<img src="https://github.com/igurvir/MindMosaic/blob/main/screenshots/home_screen.jpeg" alt="Home Screen" width="300">
 
+- Submit up to three or more gratitude entries daily.
+
+- Entries are validated for uniqueness, length, and non-emptiness.
+  
 ### Inspirational Quotes  
+
+
 - Displays random motivational quotes fetched from the ZenQuotes API.
+  
 - Refreshes dynamically on each app launch.
 
-### Streak Tracking  
-- Tracks consecutive days of gratitude entries.
-- Displays current streak and total entries in the settings page.
+### Journal Log
+
+<img src="https://github.com/igurvir/MindMosaic/blob/main/screenshots/logs.jpeg" alt="Home Screen" width="300">
+
+- View past entries organized by date, synced in real-time with Firestore.
+
+
 
 ### Wellness Tips  
+<img src="https://github.com/igurvir/MindMosaic/blob/main/screenshots/wellness_tips.jpeg" alt="Home Screen" width="300">
+
 - Offers a curated list of 100 wellness tips.
 - Save favorite tips for future reference.  
-- Tips are stored locally for offline access.
+- Tips are stored locally for offline access
+
+### Streak Tracking  
+<img src="https://github.com/igurvir/MindMosaic/blob/main/screenshots/settings.jpeg" alt="Home Screen" width="300">
+
+- Tracks consecutive days of gratitude entries.
+
+- Displays current streak and total entries in the settings page.
+
+
 
 ### Notifications  
+<img src="https://github.com/igurvir/MindMosaic/blob/main/screenshots/notification.jpeg" alt="Home Screen" width="300">
+
 - Sends daily reminders to encourage journaling.
 - Provides a success notification after an entry is saved.
 
-### Widget Integration  
-- A home screen widget displays the latest gratitude entry.  
-- Prompts users to open the app for adding new entries.  
+### Widget Integration 
+<img src="https://github.com/igurvir/MindMosaic/blob/main/screenshots/widget.jpeg" alt="Home Screen" width="300">
+
+- A home screen widget displays the latest gratitude entry.
+  
+- Prompts users to open the app for adding new entries.
+  
 - Dynamically syncs data via App Groups.
 
 ### Real-Time Syncing  
@@ -61,7 +87,8 @@ MindMosaic is a Swift-based iOS application designed to help users cultivate min
 ## Tech Stack  
 
 - **Swift (SwiftUI)**: Leveraging SwiftUI for the app’s modern and elegant UI.  
-- **Firebase Firestore**: Stores gratitude entries in the cloud.  
+- **Firebase Firestore**: Stores gratitude entries in the cloud.
+- **CoreData**: Stores wellness tips locally using core data model.  
 - **ZenQuotes API**: Fetches motivational quotes.  
 - **UserNotifications**: Handles daily reminders and success notifications.  
 - **WidgetKit**: Enables home screen widget functionality.  
