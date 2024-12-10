@@ -7,7 +7,7 @@
 import Foundation
 import Combine
 
-// Quote model for handling JSON response
+// Quote model for JSON
 struct Quote: Decodable {
     let q: String  // Quote 
     let a: String  // Author
@@ -26,7 +26,7 @@ class QuoteService {
     
     // Fetches a random quote from ZenQuotes API
     func fetchRandomQuote(completion: @escaping (Result<Quote, QuoteServiceError>) -> Void) {
-        // Ensure the URL is valid
+        // Ensure URL is valid
         guard let url = URL(string: baseURL) else {
             completion(.failure(.invalidURL))
             return
@@ -34,14 +34,13 @@ class QuoteService {
         
         // Create a data task to fetch the quote
         URLSession.shared.dataTask(with: url) { data, response, error in
-            // Handle network errors
             if let error = error {
                 print("Network error: \(error.localizedDescription)")
                 completion(.failure(.networkError))
                 return
             }
             
-            // Ensure data is non-nil and decode JSON
+            
             if let data = data {
                 do {
                     let quotes = try JSONDecoder().decode([Quote].self, from: data)
